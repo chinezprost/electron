@@ -8,57 +8,19 @@
 using namespace std;
 using namespace sf;
 
-class window
-{
-public:
-	RenderWindow window;
-};
-
 extern Font font;
+
 class MainClass
 {
 public:
 	int windowHeight;
 	int windowWidth;
-
+	
 	Image diodeImage, transistorImage, capacitatorImage, ammeterImage, bulbImage, cellImage, fuseImage, resistorImage, voltmeterImage;
 	Texture componentTexture;
 
-	MainClass() {
-		diodeImage.loadFromFile("Textures/diode.png");
-		diodeImage.createMaskFromColor(Color::White);
-
-		transistorImage.loadFromFile("Textures/transistor.png");
-		transistorImage.createMaskFromColor(Color::White);
-
-		capacitatorImage.loadFromFile("Textures/capacitator.png");
-		capacitatorImage.createMaskFromColor(Color::White);
-
-		ammeterImage.loadFromFile("Textures/ammeter.png");
-		ammeterImage.createMaskFromColor(Color::White);
-
-		bulbImage.loadFromFile("Textures/bulb.png");
-		bulbImage.createMaskFromColor(Color::White);
-
-		cellImage.loadFromFile("Textures/cell.png");
-		cellImage.createMaskFromColor(Color::White);
-
-		fuseImage.loadFromFile("Textures/fuse.png");
-		fuseImage.createMaskFromColor(Color::White);
-
-		resistorImage.loadFromFile("Textures/resistor.png");
-		resistorImage.createMaskFromColor(Color::White);
-
-		voltmeterImage.loadFromFile("Textures/voltmeter.png");
-		voltmeterImage.createMaskFromColor(Color::White);
-
-
-
-
-	}
-
-
-
+	MainClass() = default;
+	
 
 };
 
@@ -150,10 +112,8 @@ public:
 	Components() = default;
 
 	VertexArray ComputeDiodeDraw(Vector2f position, Vector2f size, float rotation) {
-		//file = fopen("C:\\Users\\plays\\source\\repos\\SFML-Electron\\x64\\Debug\\Components\\Diode.txt", "r");
-		ifstream fin("C:\\Users\\plays\\source\\repos\\SFML-Electron\\x64\\Debug\\Components\\Diode.txt");
-
-
+		//file = fopen("C:\\Electron\\electron\\x64\\Debug\\Components\\Diode.txt", "r");
+		ifstream fin("C:\\Electron\\electron\\x64\\Debug\\Components\\Diode.txt");
 		char readedLine[256] = "undefined";
 		VertexArray shape(sf::Lines, 12);
 		do
@@ -192,8 +152,8 @@ public:
 	}
 	VertexArray ComputeCapacitatorDraw(Vector2f position, Vector2f size, float rotation)
 	{
-		ifstream fin("C:\\Users\\plays\\source\\repos\\SFML-Electron\\x64\\Debug\\Components\\Capacitator.txt");
-		VertexArray shape(sf::Lines, 12);
+		ifstream fin("C:\\Electron\\electron\\x64\\Debug\\Components\\Capacitator.txt");
+		VertexArray shape(sf::Lines, 8);
 		char readedLine[256] = "undefined";
 		do
 		{
@@ -232,9 +192,9 @@ public:
 
 	VertexArray ComputeFuseDraw(Vector2f position, Vector2f size, float rotation)
 	{
-		ifstream fin("C:\\Users\\plays\\source\\repos\\SFML-Electron\\x64\\Debug\\Components\\Fuse.txt");
+		ifstream fin("C:\\Electron\\electron\\x64\\Debug\\Components\\Fuse.txt");
 		char readedLine[256] = "undefined";
-		VertexArray shape(Lines, 12);
+		VertexArray shape(Lines, 10);
 		do
 		{
 			fin.getline(readedLine, 256);
@@ -274,7 +234,7 @@ public:
 
 	pair<VertexArray, CircleShape>  ComputeBulbDraw(Vector2f position, Vector2f size, float rotation)
 	{
-		ifstream fin("C:\\Users\\plays\\source\\repos\\SFML-Electron\\x64\\Debug\\Components\\Bulb.txt");
+		ifstream fin("C:\\Electron\\electron\\x64\\Debug\\Components\\Bulb.txt");
 		char readedLine[256] = "undefined";
 		VertexArray shape(Lines, 8);
 		CircleShape circleShape;
@@ -338,11 +298,11 @@ public:
 	}
 
 	VertexArray ComputeCellDraw(Vector2f position, Vector2f size, float rotation) {
-		ifstream fin("C:\\Users\\plays\\source\\repos\\SFML-Electron\\x64\\Debug\\Components\\ElectricalCell.txt");
+		ifstream fin("C:\\Electron\\electron\\x64\\Debug\\Components\\ElectricalCell.txt");
 
 
 		char readedLine[256] = "undefined";
-		VertexArray shape(sf::Lines, 12);
+		VertexArray shape(sf::Lines, 8);
 		do
 		{
 			fin.getline(readedLine, 256);
@@ -381,7 +341,7 @@ public:
 
 	pair<VertexArray, CircleShape>  ComputeAmmeterDraw(Vector2f position, Vector2f size, float rotation)
 	{
-		ifstream fin("C:\\Users\\plays\\source\\repos\\SFML-Electron\\x64\\Debug\\Components\\Ammeter.txt");
+		ifstream fin("C:\\Electron\\electron\\x64\\Debug\\Components\\Ammeter.txt");
 		char readedLine[256] = "undefined";
 		VertexArray shape(Lines, 10);
 		CircleShape circleShape;
@@ -446,7 +406,7 @@ public:
 
 	pair<VertexArray, CircleShape>  ComputeVoltmeterDraw(Vector2f position, Vector2f size, float rotation)
 	{
-		ifstream fin("C:\\Users\\plays\\source\\repos\\SFML-Electron\\x64\\Debug\\Components\\Voltmeter.txt");
+		ifstream fin("C:\\Electron\\electron\\x64\\Debug\\Components\\Voltmeter.txt");
 		char readedLine[256] = "undefined";
 		VertexArray shape(Lines, 8);
 		CircleShape circleShape;
@@ -511,9 +471,9 @@ public:
 
 	pair<VertexArray, CircleShape>  ComputeTransistorDraw(Vector2f position, Vector2f size, float rotation)
 	{
-		ifstream fin("C:\\Users\\plays\\source\\repos\\SFML-Electron\\x64\\Debug\\Components\\Transistor.txt");
+		ifstream fin("C:\\Electron\\electron\\x64\\Debug\\Components\\Transistor.txt");
 		char readedLine[256] = "undefined";
-		VertexArray shape(Lines, 14);
+		VertexArray shape(Lines, 12);
 		CircleShape circleShape;
 		do
 		{
@@ -576,7 +536,7 @@ public:
 
 	VertexArray ComputeResistorDraw(Vector2f position, Vector2f size, float rotation)
 	{
-		ifstream fin("C:\\Users\\plays\\source\\repos\\SFML-Electron\\x64\\Debug\\Components\\Resistor.txt");
+		ifstream fin("C:\\Electron\\electron\\x64\\Debug\\Components\\Resistor.txt");
 		char readedLine[256] = "undefined";
 		VertexArray shape(Lines, 12);
 		do
@@ -662,10 +622,7 @@ public:
 	}
 };
 
-
-
-
-class ElectricalComponent : public MainClass, window, Components
+class ElectricalComponent : public MainClass, Components
 {
 
 public:
@@ -780,8 +737,7 @@ public:
 
 };
 
-
-class Button : public MainClass, window
+class Button : public MainClass
 {
 public:
 	enum State {
