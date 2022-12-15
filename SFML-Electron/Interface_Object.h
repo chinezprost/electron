@@ -1,6 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <fstream>
+#include <format>
 #include <iostream>
 #include <string>
 #define defaultSizeX 100
@@ -44,6 +45,7 @@ public:
 
 	RectangleShape sliderShape;
 	CircleShape sliderButton;
+	Text sliderText;
 
 	Slider(Vector2f _position)
 	{
@@ -54,15 +56,24 @@ public:
 		sliderShape.setPosition(_position);
 		sliderShape.setSize(Vector2f(99, 5));
 		sliderShape.setFillColor(Color(155, 155, 155, 255));
-		sliderButton.setPosition(buttonPosition);
-		sliderButton.setRadius(5);
-		sliderButton.setFillColor(Color::Red);
+		sliderButton.setPosition(buttonPosition + Vector2f(0, 5));
+		sliderButton.setRadius(3);
+		sliderButton.setFillColor(Color::Blue);
+
+		sliderText.setFont(font);
+		sliderText.setCharacterSize(60);
+		sliderText.setScale(Vector2f(.2, .2));
+		sliderText.setString("rotation 0");
+		sliderText.setFillColor(Color::Black);
+		sliderText.setPosition(_position + Vector2f(.1, -20));
 
 	}
 
 	void DrawSlider(RenderWindow& window) {
 		window.draw(sliderShape);
 		window.draw(sliderButton);
+		window.draw(sliderText);
+
 	}
 
 
@@ -79,6 +90,8 @@ public:
 		}
 		if (isDraggingButton)
 		{
+			string SliderText = "rotation: ";
+			sliderText.setString(SliderText.append(to_string((int)computeValue(sliderButton.getPosition().x))));
 			cout << computeValue(sliderButton.getPosition().x) << '\n';
 			currentMouseCoords = mouseCoords;
 			auto offset = Vector2f(currentMouseCoords.x - previousMouseCoords.x, currentMouseCoords.y - previousMouseCoords.y);
@@ -91,10 +104,10 @@ public:
 		}
 
 		if (sliderButton.getPosition().x < minX)
-			sliderButton.setPosition(minX, position.y - 5);
+			sliderButton.setPosition(minX, sliderButton.getPosition().y);
 
 		if (sliderButton.getPosition().x > maxX)
-			sliderButton.setPosition(maxX, position.y - 5);
+			sliderButton.setPosition(maxX, sliderButton.getPosition().y);
 	}
 
 	bool isMouseOnButtonSlider(Vector2f mouseCoords) {
@@ -112,8 +125,8 @@ public:
 	Components() = default;
 
 	VertexArray ComputeDiodeDraw(Vector2f position, Vector2f size, float rotation) {
-		//file = fopen("C:\\Electron\\electron\\x64\\Debug\\Components\\Diode.txt", "r");
-		ifstream fin("C:\\Electron\\electron\\x64\\Debug\\Components\\Diode.txt");
+		//file = fopen("C:\\Users\\plays\\source\\repos\\SFML-Electron\\x64\\Debug\\Components\\Diode.txt", "r");
+		ifstream fin("C:\\Users\\plays\\source\\repos\\SFML-Electron\\x64\\Debug\\Components\\Diode.txt");
 		char readedLine[256] = "undefined";
 		VertexArray shape(sf::Lines, 12);
 		do
@@ -152,7 +165,7 @@ public:
 	}
 	VertexArray ComputeCapacitatorDraw(Vector2f position, Vector2f size, float rotation)
 	{
-		ifstream fin("C:\\Electron\\electron\\x64\\Debug\\Components\\Capacitator.txt");
+		ifstream fin("C:\\Users\\plays\\source\\repos\\SFML-Electron\\x64\\Debug\\Components\\Capacitator.txt");
 		VertexArray shape(sf::Lines, 8);
 		char readedLine[256] = "undefined";
 		do
@@ -192,7 +205,7 @@ public:
 
 	VertexArray ComputeFuseDraw(Vector2f position, Vector2f size, float rotation)
 	{
-		ifstream fin("C:\\Electron\\electron\\x64\\Debug\\Components\\Fuse.txt");
+		ifstream fin("C:\\Users\\plays\\source\\repos\\SFML-Electron\\x64\\Debug\\Components\\Fuse.txt");
 		char readedLine[256] = "undefined";
 		VertexArray shape(Lines, 10);
 		do
@@ -234,7 +247,7 @@ public:
 
 	pair<VertexArray, CircleShape>  ComputeBulbDraw(Vector2f position, Vector2f size, float rotation)
 	{
-		ifstream fin("C:\\Electron\\electron\\x64\\Debug\\Components\\Bulb.txt");
+		ifstream fin("C:\\Users\\plays\\source\\repos\\SFML-Electron\\x64\\Debug\\Components\\Bulb.txt");
 		char readedLine[256] = "undefined";
 		VertexArray shape(Lines, 8);
 		CircleShape circleShape;
@@ -298,7 +311,7 @@ public:
 	}
 
 	VertexArray ComputeCellDraw(Vector2f position, Vector2f size, float rotation) {
-		ifstream fin("C:\\Electron\\electron\\x64\\Debug\\Components\\ElectricalCell.txt");
+		ifstream fin("C:\\Users\\plays\\source\\repos\\SFML-Electron\\x64\\Debug\\Components\\ElectricalCell.txt");
 
 
 		char readedLine[256] = "undefined";
@@ -341,7 +354,7 @@ public:
 
 	pair<VertexArray, CircleShape>  ComputeAmmeterDraw(Vector2f position, Vector2f size, float rotation)
 	{
-		ifstream fin("C:\\Electron\\electron\\x64\\Debug\\Components\\Ammeter.txt");
+		ifstream fin("C:\\Users\\plays\\source\\repos\\SFML-Electron\\x64\\Debug\\Components\\Ammeter.txt");
 		char readedLine[256] = "undefined";
 		VertexArray shape(Lines, 10);
 		CircleShape circleShape;
@@ -406,7 +419,7 @@ public:
 
 	pair<VertexArray, CircleShape>  ComputeVoltmeterDraw(Vector2f position, Vector2f size, float rotation)
 	{
-		ifstream fin("C:\\Electron\\electron\\x64\\Debug\\Components\\Voltmeter.txt");
+		ifstream fin("C:\\Users\\plays\\source\\repos\\SFML-Electron\\x64\\Debug\\Components\\\Voltmeter.txt");
 		char readedLine[256] = "undefined";
 		VertexArray shape(Lines, 8);
 		CircleShape circleShape;
@@ -471,7 +484,7 @@ public:
 
 	pair<VertexArray, CircleShape>  ComputeTransistorDraw(Vector2f position, Vector2f size, float rotation)
 	{
-		ifstream fin("C:\\Electron\\electron\\x64\\Debug\\Components\\Transistor.txt");
+		ifstream fin("C:\\Users\\plays\\source\\repos\\SFML-Electron\\x64\\Debug\\Components\\Transistor.txt");
 		char readedLine[256] = "undefined";
 		VertexArray shape(Lines, 12);
 		CircleShape circleShape;
@@ -536,7 +549,7 @@ public:
 
 	VertexArray ComputeResistorDraw(Vector2f position, Vector2f size, float rotation)
 	{
-		ifstream fin("C:\\Electron\\electron\\x64\\Debug\\Components\\Resistor.txt");
+		ifstream fin("C:\\Users\\plays\\source\\repos\\SFML-Electron\\x64\\Debug\\Components\\Resistor.txt");
 		char readedLine[256] = "undefined";
 		VertexArray shape(Lines, 12);
 		do
@@ -784,17 +797,18 @@ public:
 
 	void DrawButton() {
 		buttonShape.setSize(size);
-		buttonShape.setOutlineColor(sf::Color::Magenta);
+		buttonShape.setOutlineColor(Color(100,100,100, 255));
 		buttonShape.setOutlineThickness(1);
 		buttonShape.setPosition(position);
 
 		buttonText.setFont(font);
-		buttonText.setCharacterSize(24);
-		buttonText.setFillColor(Color::Cyan);
+		buttonText.setCharacterSize(120);
+		buttonText.setScale(Vector2f(.13, .13));
+		buttonText.setFillColor(Color::White);
 
 
 		//temporary solution //TODO: center the text in center of the button
-		buttonText.setPosition(Vector2f(position.x + size.x / 8, position.y + size.y / 8));
+		buttonText.setPosition(Vector2f(position.x + size.x / 8 + 15, position.y + size.y / 8));
 	}
 
 	void InstantiateComponent(Type type, ElectricalComponent* components[], int& electricalCount, Vector2f mouseCoords, Vector2f defaultSize) {

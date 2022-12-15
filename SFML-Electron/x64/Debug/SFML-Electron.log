@@ -1,50 +1,40 @@
 ﻿  Source.cpp
-C:\Electron\electron\SFML-Electron\Interface_Object.h(284,39): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Electron\electron\SFML-Electron\Interface_Object.h(288,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Electron\electron\SFML-Electron\Interface_Object.h(391,39): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Electron\electron\SFML-Electron\Interface_Object.h(395,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Electron\electron\SFML-Electron\Interface_Object.h(456,39): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Electron\electron\SFML-Electron\Interface_Object.h(460,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Electron\electron\SFML-Electron\Interface_Object.h(521,39): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-C:\Electron\electron\SFML-Electron\Interface_Object.h(525,1): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Electron\electron\SFML-Electron\Source.cpp(175,26): warning C4244: '+=': conversion from 'double' to 'T', possible loss of data
+  The contents of <format> are available only with C++20 or later.
+C:\Users\plays\source\repos\SFML-Electron\SFML-Electron\Interface_Object.h(65,1): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Electron\electron\SFML-Electron\Source.cpp(177,25): warning C4244: '+=': conversion from 'double' to 'T', possible loss of data
+C:\Users\plays\source\repos\SFML-Electron\SFML-Electron\Interface_Object.h(68,1): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-C:\Electron\electron\SFML-Electron\Source.cpp(247,39): warning C4244: '=': conversion from 'T' to 'T', possible loss of data
+C:\Users\plays\source\repos\SFML-Electron\SFML-Electron\Interface_Object.h(422,16): warning C4129: 'V': unrecognized character escape sequence
+C:\Users\plays\source\repos\SFML-Electron\SFML-Electron\Interface_Object.h(297,39): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\plays\source\repos\SFML-Electron\SFML-Electron\Interface_Object.h(301,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\plays\source\repos\SFML-Electron\SFML-Electron\Interface_Object.h(404,39): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\plays\source\repos\SFML-Electron\SFML-Electron\Interface_Object.h(408,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\plays\source\repos\SFML-Electron\SFML-Electron\Interface_Object.h(469,39): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\plays\source\repos\SFML-Electron\SFML-Electron\Interface_Object.h(473,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\plays\source\repos\SFML-Electron\SFML-Electron\Interface_Object.h(534,39): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\plays\source\repos\SFML-Electron\SFML-Electron\Interface_Object.h(538,1): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\plays\source\repos\SFML-Electron\SFML-Electron\Interface_Object.h(806,1): warning C4305: 'argument': truncation from 'double' to 'T'
           with
-          [
-              T=int
-          ]
-          and
           [
               T=float
           ]
-C:\Electron\electron\SFML-Electron\Source.cpp(248,39): warning C4244: '=': conversion from 'T' to 'T', possible loss of data
+C:\Users\plays\source\repos\SFML-Electron\SFML-Electron\Source.cpp(190,26): warning C4244: '+=': conversion from 'double' to 'T', possible loss of data
           with
-          [
-              T=int
-          ]
-          and
           [
               T=float
           ]
-C:\Electron\electron\SFML-Electron\Source.cpp(311,40): warning C4244: '=': conversion from 'T' to 'T', possible loss of data
+C:\Users\plays\source\repos\SFML-Electron\SFML-Electron\Source.cpp(192,25): warning C4244: '+=': conversion from 'double' to 'T', possible loss of data
           with
-          [
-              T=int
-          ]
-          and
           [
               T=float
           ]
-C:\Electron\electron\SFML-Electron\Source.cpp(312,40): warning C4244: '=': conversion from 'T' to 'T', possible loss of data
+C:\Users\plays\source\repos\SFML-Electron\SFML-Electron\Source.cpp(365,39): warning C4244: '=': conversion from 'T' to 'T', possible loss of data
           with
           [
               T=int
@@ -53,9 +43,37 @@ C:\Electron\electron\SFML-Electron\Source.cpp(312,40): warning C4244: '=': conve
           [
               T=float
           ]
-C:\Electron\electron\SFML-Electron\Source.cpp(340,152): warning C4305: 'argument': truncation from 'double' to 'T'
+C:\Users\plays\source\repos\SFML-Electron\SFML-Electron\Source.cpp(366,39): warning C4244: '=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=int
+          ]
+          and
+          [
+              T=float
+          ]
+C:\Users\plays\source\repos\SFML-Electron\SFML-Electron\Source.cpp(420,36): warning C4305: 'argument': truncation from 'double' to 'float'
+C:\Users\plays\source\repos\SFML-Electron\SFML-Electron\Source.cpp(439,40): warning C4244: '=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=int
+          ]
+          and
+          [
+              T=float
+          ]
+C:\Users\plays\source\repos\SFML-Electron\SFML-Electron\Source.cpp(440,40): warning C4244: '=': conversion from 'T' to 'T', possible loss of data
+          with
+          [
+              T=int
+          ]
+          and
+          [
+              T=float
+          ]
+C:\Users\plays\source\repos\SFML-Electron\SFML-Electron\Source.cpp(481,170): warning C4305: 'argument': truncation from 'double' to 'T'
           with
           [
               T=float
           ]
-  SFML-Electron.vcxproj -> C:\Electron\electron\x64\Debug\SFML-Electron.exe
+  SFML-Electron.vcxproj -> C:\Users\plays\source\repos\SFML-Electron\x64\Debug\SFML-Electron.exe

@@ -70,6 +70,8 @@ Slider rotationSlider(Vector2f(centerScreen.x + 810, centerScreen.y + 470));
 //font
 Font font;
 
+bool canComponentsBeSelected = false;
+
 #pragma endregion
 
 bool isInDrawableArea(Vector2f mouseCoords, FloatRect shapeBounds) {
@@ -81,6 +83,19 @@ bool isInDrawableArea(Vector2f mouseCoords, FloatRect shapeBounds) {
 
 	return false;
 }
+
+void drawConnectionLines(Vector2f linepos, Vector2f linescale, float rot)
+{
+	RectangleShape* newLine = new RectangleShape(linepos);
+	newLine->setRotation(rot);
+	newLine->setScale(linescale);
+	newLine->setFillColor(Color::Black);
+	
+
+	line.push_back(newLine);
+	
+}
+
 
 void computeLines(Vector2f pointA, Vector2f pointB) {
 
@@ -160,13 +175,13 @@ bool anySelectedButton() {
 void deleteComponent(int index)
 {
 	int i = index;
-	
+
 	project_components[i] = nullptr;
 	for (i; i < projectComponentCount; i++)
 		project_components[i] = project_components[i + 1];
 	project_components[i] = nullptr;
 	projectComponentCount--;
-	
+
 }
 
 void drawLinesToBounds(FloatRect bounds, float offset = 5)
@@ -209,7 +224,7 @@ void drawLinesToBounds(FloatRect bounds, float offset = 5)
 	cout << '\n';
 	*/
 
-	
+
 	window.draw(lines);
 }
 
@@ -223,10 +238,113 @@ void loadFont()
 
 bool areCoordsInBounds(Vector2f coords, FloatRect bounds)
 {
-	if (coords.x > bounds.left && coords.x < bounds.left + bounds.width &&coords.y > bounds.top && coords.y < bounds.top + bounds.height)
+	if (coords.x > bounds.left && coords.x < bounds.left + bounds.width && coords.y > bounds.top && coords.y < bounds.top + bounds.height)
 		return true;
 	return false;
 }
+
+void saveToFile()
+{
+	auto fout = ofstream("C:\\Users\\plays\\source\\repos\\SFML-Electron\\x64\\Debug\\Save\\output.txt");
+	fout << projectComponentCount << '\n';
+	for (int i = 1; i <= projectComponentCount; i++)
+	{
+		fout << project_components[i]->type << " ";
+		fout << project_components[i]->position.x << " " << project_components[i]->position.y << " ";
+		fout << project_components[i]->rotation << " ";
+		fout << '\n';
+	}
+	fout << '\n';
+	fout << line.size() << '\n';
+	for (list<RectangleShape*>::iterator element = line.begin(); element != line.end(); element++)
+	{
+		fout << (*element)->getPosition().x << " ";
+		fout << (*element)->getPosition().y << " ";
+
+		fout << (*element)->getScale().x << " ";
+		fout << (*element)->getScale().y << " ";
+
+		fout << (*element)->getRotation() << '\n';
+	}
+
+	fout.close();
+}
+
+void resetProject()
+{
+	memset(project_components, 0, sizeof(project_components));
+	projectComponentCount = 0;
+	line.clear();
+	selectedComponentIndex = -1;
+}
+
+Button::Type returnType(int input)
+{
+	switch (input)
+	{
+	case 0:
+		return Button::Null;
+	case 1:
+		return Button::Cell;
+	case 2:
+		return Button::Resistor;
+	case 3:
+		return Button::Ammeter;
+	case 4:
+		return Button::Voltmeter;
+	case 5:
+		return Button::Capacitor;
+	case 6:
+		return Button::Transistor;
+	case 7:
+		return Button::Fuse;
+	case 8:
+		return Button::Diode;
+	default:
+		cout << "an error happened, couldn't load file";
+		return Button::Null;
+	}
+
+}
+
+void loadFromFile()
+{
+
+	auto fin = ifstream("C:\\Users\\plays\\source\\repos\\SFML-Electron\\x64\\Debug\\Save\\output.txt");
+	resetProject();
+	int count;
+	fin >> count;
+	int type; Vector2f position; float rotation;
+	projectComponentCount = 0;
+	for (int i = 1; i <= count; i++)
+	{
+		fin >> type; fin >> position.x; fin >> position.y; fin >> rotation;
+		project_buttons[1]->InstantiateComponent(returnType(type), project_components, projectComponentCount, position, Vector2f(1, 1));
+	}
+
+	int lineCount;
+	fin >> lineCount;
+
+	line.clear();
+	Vector2f linePos; Vector2f lineScale; float rot;
+	for (int i = 1; i <= lineCount; i++)
+	{
+		fin >> linePos.x >> linePos.y >> lineScale.x >> lineScale.y >> rot;
+		drawConnectionLines(linePos, lineScale, rot);
+		
+	}
+
+	fin.close();
+
+
+
+
+}
+
+
+
+
+
 
 void init()
 {
@@ -248,7 +366,8 @@ int main() {
 	centerScreen.y = window.getPosition().y;
 
 	//declaration of static elements within the project
-
+	Vector2f defaultComponentButtonSize = Vector2f(100, 30);
+	Vector2f defaultProjectButtonSize = Vector2f(155, 30);
 #pragma region static-declarated buttons
 	Button button_mainMenu_newProject(Vector2f(centerScreen.x, centerScreen.y - 100), Vector2f(150, 63), 0, Button::Null, "New project");
 	mainMenu_buttons[++buttonCount] = &button_mainMenu_newProject;
@@ -258,35 +377,35 @@ int main() {
 	mainMenu_buttons[++buttonCount] = &button_mainMenu_info;
 	Button button_mainMenu_exit(Vector2f(centerScreen.x, centerScreen.y + 140), Vector2f(150, 63), 0, Button::Null, "Exit");
 	mainMenu_buttons[++buttonCount] = &button_mainMenu_exit;
-	Button button_project_cell(Vector2f(centerScreen.x - 425, centerScreen.y - 200), Vector2f(100, 30), 0, Button::Cell, "Cell");
+	Button button_project_cell(Vector2f(centerScreen.x - 425, centerScreen.y - 200), defaultComponentButtonSize, 0, Button::Cell, "Cell");
 	project_buttons[++projectbuttonCount] = &button_project_cell;
-	Button button_project_resistor(Vector2f(centerScreen.x - 425, centerScreen.y - 150), Vector2f(100, 30), 0, Button::Resistor, "Resistor");
+	Button button_project_resistor(Vector2f(centerScreen.x - 425, centerScreen.y - 150), defaultComponentButtonSize, 0, Button::Resistor, "Resistor");
 	project_buttons[++projectbuttonCount] = &button_project_resistor;
-	Button button_project_bulb(Vector2f(centerScreen.x - 425, centerScreen.y - 100), Vector2f(100, 30), 0, Button::Bulb, "Bulb");
+	Button button_project_bulb(Vector2f(centerScreen.x - 425, centerScreen.y - 100), defaultComponentButtonSize, 0, Button::Bulb, "Bulb");
 	project_buttons[++projectbuttonCount] = &button_project_bulb;
-	Button button_project_diode(Vector2f(centerScreen.x - 425, centerScreen.y - 50), Vector2f(100, 30), 0, Button::Diode, "Diode");
+	Button button_project_diode(Vector2f(centerScreen.x - 425, centerScreen.y - 50), defaultComponentButtonSize, 0, Button::Diode, "Diode");
 	project_buttons[++projectbuttonCount] = &button_project_diode;
-	Button button_project_ammeter(Vector2f(centerScreen.x - 425, centerScreen.y), Vector2f(100, 30), 0, Button::Ammeter, "Ammeter");
+	Button button_project_ammeter(Vector2f(centerScreen.x - 425, centerScreen.y), defaultComponentButtonSize, 0, Button::Ammeter, "Ammeter");
 	project_buttons[++projectbuttonCount] = &button_project_ammeter;
-	Button button_project_voltmeter(Vector2f(centerScreen.x - 425, centerScreen.y + 50), Vector2f(100, 30), 0, Button::Voltmeter, "Voltmeter");
+	Button button_project_voltmeter(Vector2f(centerScreen.x - 425, centerScreen.y + 50), defaultComponentButtonSize, 0, Button::Voltmeter, "Voltmeter");
 	project_buttons[++projectbuttonCount] = &button_project_voltmeter;
-	Button button_project_capacitor(Vector2f(centerScreen.x - 425, centerScreen.y + 100), Vector2f(100, 30), 0, Button::Capacitor, "Capacitor");
+	Button button_project_capacitor(Vector2f(centerScreen.x - 425, centerScreen.y + 100), defaultComponentButtonSize, 0, Button::Capacitor, "Capacitor");
 	project_buttons[++projectbuttonCount] = &button_project_capacitor;
-	Button button_project_transistor(Vector2f(centerScreen.x - 425, centerScreen.y + 150), Vector2f(100, 30), 0, Button::Transistor, "Transistor");
+	Button button_project_transistor(Vector2f(centerScreen.x - 425, centerScreen.y + 150), defaultComponentButtonSize, 0, Button::Transistor, "Transistor");
 	project_buttons[++projectbuttonCount] = &button_project_transistor;
-	Button button_project_fuse(Vector2f(centerScreen.x - 425, centerScreen.y + 200), Vector2f(100, 30), 0, Button::Fuse, "Fuse");
+	Button button_project_fuse(Vector2f(centerScreen.x - 425, centerScreen.y + 200), defaultComponentButtonSize, 0, Button::Fuse, "Fuse");
 	project_buttons[++projectbuttonCount] = &button_project_fuse;
-	Button button_project_back(Vector2f(centerScreen.x - 400, centerScreen.y - 250), Vector2f(150, 30), 0, Button::Null, "Back");
+	Button button_project_back(Vector2f(centerScreen.x - 400, centerScreen.y - 250), defaultProjectButtonSize, 0, Button::Null, "Back");
 	project_buttons[++projectbuttonCount] = &button_project_back;
-	Button button_project_save(Vector2f(centerScreen.x - 240, centerScreen.y - 250), Vector2f(150, 30), 0, Button::Null, "Save");
+	Button button_project_save(Vector2f(centerScreen.x - 240, centerScreen.y - 250), defaultProjectButtonSize, 0, Button::Null, "Save");
 	project_buttons[++projectbuttonCount] = &button_project_save;
-	Button button_project_saveas(Vector2f(centerScreen.x - 80, centerScreen.y - 250), Vector2f(150, 30), 0, Button::Null, "Save As");
+	Button button_project_saveas(Vector2f(centerScreen.x - 80, centerScreen.y - 250), defaultProjectButtonSize, 0, Button::Null, "Save As");
 	project_buttons[++projectbuttonCount] = &button_project_saveas;
-	Button button_project_open(Vector2f(centerScreen.x + 80, centerScreen.y - 250), Vector2f(150, 30), 0, Button::Null, "Open");
+	Button button_project_open(Vector2f(centerScreen.x + 80, centerScreen.y - 250), defaultProjectButtonSize, 0, Button::Null, "Open");
 	project_buttons[++projectbuttonCount] = &button_project_open;
-	Button button_project_reset(Vector2f(centerScreen.x + 240, centerScreen.y - 250), Vector2f(150, 30), 0, Button::Null, "Reset");
+	Button button_project_reset(Vector2f(centerScreen.x + 240, centerScreen.y - 250), defaultProjectButtonSize, 0, Button::Null, "Reset");
 	project_buttons[++projectbuttonCount] = &button_project_reset;
-	Button button_project_help(Vector2f(centerScreen.x + 400, centerScreen.y - 250), Vector2f(150, 30), 0, Button::Null, "Help");
+	Button button_project_help(Vector2f(centerScreen.x + 400, centerScreen.y - 250), defaultProjectButtonSize, 0, Button::Null, "Help");
 	project_buttons[++projectbuttonCount] = &button_project_help;
 	Button button_project_undo(Vector2f(centerScreen.x - 415, centerScreen.y + 250), Vector2f(125, 30), 0, Button::Null, "Undo");
 	project_buttons[++projectbuttonCount] = &button_project_undo;
@@ -294,6 +413,15 @@ int main() {
 	project_buttons[++projectbuttonCount] = &button_project_redo;
 	Button button_project_edit(Vector2f(centerScreen.x - 145, centerScreen.y + 250), Vector2f(125, 30), 0, Button::Null, "Edit");
 	project_buttons[++projectbuttonCount] = &button_project_edit;
+
+	//edit button ON and OFF text
+	Text edit_button_text = Text("undefined", font, 100);
+	edit_button_text.setPosition(centerScreen.x - 113, centerScreen.y + 233);
+	edit_button_text.setScale(.13, .13);
+
+
+
+
 	Button button_project_delete(Vector2f(centerScreen.x - 10, centerScreen.y + 250), Vector2f(125, 30), 0, Button::Null, "Delete");
 	project_buttons[++projectbuttonCount] = &button_project_delete;
 
@@ -311,6 +439,19 @@ int main() {
 		centerScreen.x = window.getPosition().x;
 		centerScreen.y = window.getPosition().y;
 
+
+		//if componenets can be selected it'll be ON and green, otherwise OFF and red
+		if (canComponentsBeSelected)
+		{
+			edit_button_text.setString("ON");
+			edit_button_text.setFillColor(Color::Green);
+		}
+		else
+		{
+			edit_button_text.setString("OFF");
+			edit_button_text.setFillColor(Color::Red);
+		}
+
 		Event event;
 		while (window.pollEvent(event)) {
 			window.clear(Color::Black);
@@ -327,8 +468,8 @@ int main() {
 					auto buttonBounds = mainMenu_buttons[i]->buttonShape.getGlobalBounds();
 					if (areCoordsInBounds(mouseCoords, buttonBounds))
 						mainMenu_buttons[i]->buttonState = (event.type == Event::MouseButtonPressed) ? Button::CLICKED : Button::HOVERED;
-					else 
-						mainMenu_buttons[i]->buttonState = Button::INACTIVE;			
+					else
+						mainMenu_buttons[i]->buttonState = Button::INACTIVE;
 				}
 				break;
 
@@ -337,7 +478,7 @@ int main() {
 					auto buttonBounds = project_buttons[i]->buttonShape.getGlobalBounds();
 					if (!(areCoordsInBounds(mouseCoords, buttonBounds)) && project_buttons[i]->buttonState == Button::SELECTED && event.type == Event::MouseButtonPressed) {
 						if (isInDrawableArea(mouseCoords, use_space.getGlobalBounds()))
-							project_buttons[i]->InstantiateComponent(project_buttons[i]->typeToCast, project_components, projectComponentCount, mouseCoords, Vector2f(.2, .2));
+							project_buttons[i]->InstantiateComponent(project_buttons[i]->typeToCast, project_components, projectComponentCount, mouseCoords + Vector2f(-5, 5), Vector2f(.2, .2));
 						project_buttons[i]->buttonState = Button::INACTIVE;
 
 					}
@@ -345,10 +486,10 @@ int main() {
 						if (project_buttons[i]->buttonState != Button::SELECTED)
 							project_buttons[i]->buttonState = (event.type == Event::MouseButtonPressed) ? Button::CLICKED : Button::HOVERED;
 					}
-					else 
+					else
 						if (project_buttons[i]->buttonState != Button::SELECTED)
 							project_buttons[i]->buttonState = Button::INACTIVE;
-					
+
 				}
 				if (!anySelectedButton()) {
 					if (isInDrawableArea(mouseCoords, use_space.getGlobalBounds()) && event.type == Event::MouseButtonPressed && !isHoldingClick) {
@@ -358,7 +499,8 @@ int main() {
 					else if (isInDrawableArea(mouseCoords, use_space.getGlobalBounds()) && event.type == Event::MouseButtonReleased && isHoldingClick) {
 						//if (sqrt(mouseCoords.x - pointA.x) * (mouseCoords.x - pointA.x) + (mouseCoords.y - pointA.y) * (mouseCoords.y - pointA.y) > 5)
 						isHoldingClick = false;
-						//computeLines(pointA, mouseCoords);
+						if (!isDraggingComponent)
+							computeLines(pointA, mouseCoords);
 					}
 				}
 
@@ -379,9 +521,13 @@ int main() {
 					mainMenu_buttons[i]->buttonShape.setFillColor(Color::Cyan);
 					break;
 				case(Button::CLICKED):
-					cout << mainMenu_buttons[i]->typeToCast << " has been clicked." << endl;
+					cout << i << " has been clicked." << endl;
 					if (i == 1)
 						states = Project;
+
+					if (i == 4)
+						window.close();
+
 					mainMenu_buttons[i]->buttonState = Button::INACTIVE;
 					break;
 				}
@@ -398,19 +544,41 @@ int main() {
 					project_buttons[i]->buttonShape.setFillColor(Color::Black);
 					break;
 				case(Button::HOVERED):
-					project_buttons[i]->buttonShape.setFillColor(Color::Red);
+					project_buttons[i]->buttonShape.setFillColor(Color(100, 100, 100, 255));
 					break;
 				case(Button::CLICKED):
-					project_buttons[i]->buttonState = Button::SELECTED;
-					cout << project_buttons[i]->typeToCast << " has been clicked." << endl;
+					if (i >= 1 && i <= 9) {
+						project_buttons[i]->buttonState = Button::SELECTED;
+						continue;
+					}
+
+					cout << i << " has been clicked." << endl;
 					if (i == 10)
+					{
 						states = MainMenu;
-					if (i == 14) {
-						memset(project_components, 0, sizeof(project_components));
-						projectComponentCount = 0;
-						line.clear();
+						selectedComponentIndex = -1;
+					}
+					if (i == 11)
+					{
+						saveToFile();
+
+					}
+					if (i == 13)
+					{
+						loadFromFile();
+					}
+
+					if (i == 14)
+					{
+						resetProject();
 						ok = 0;
 					}
+					if (i == 18)
+					{
+						canComponentsBeSelected = !canComponentsBeSelected;
+						selectedComponentIndex = -1;
+					}
+
 					if (i == 19)
 					{
 						cout << selectedComponentIndex << '\n';
@@ -418,7 +586,7 @@ int main() {
 						selectedComponentIndex = -1;
 						selectedComponentBounds = FloatRect(0, 0, 0, 0);
 					}
-					//project_buttons[i]->buttonState = Button::INACTIVE;
+					project_buttons[i]->buttonState = Button::INACTIVE;
 					break;
 				case(Button::SELECTED):
 					project_buttons[i]->buttonShape.setFillColor(Color::Magenta);
@@ -428,6 +596,10 @@ int main() {
 			}
 
 			for (int i = 1; i <= projectComponentCount; i++) {
+
+				if (!canComponentsBeSelected)
+					break;
+
 				//drag-and-drop logic
 				if (project_components[i]->isMouseOnComponent(window.mapPixelToCoords(myMouse.getPosition(window))) && event.type == Event::MouseButtonPressed && !isDraggingComponent) {
 					isDraggingComponent = true;
@@ -441,7 +613,7 @@ int main() {
 					previousMouseCoords = currentMouseCoords;
 					draggedComponent->circleShape.setPosition(draggedComponent->circleShape.getPosition().x + offset.x, draggedComponent->circleShape.getPosition().y + offset.y);
 					draggedComponent->setPosition(offset);
-					
+
 				}
 				if (event.type == Event::MouseButtonReleased && isDraggingComponent)
 				{
@@ -449,7 +621,7 @@ int main() {
 					draggedComponent = nullptr;
 				}
 
-				
+
 
 
 				/*else if (isDraggingComponent && event.type == Event::MouseButtonReleased)
@@ -465,7 +637,8 @@ int main() {
 
 			for (int i = 1; i <= projectComponentCount; i++)
 			{
-				
+				if (!canComponentsBeSelected)
+					break;
 				if (event.type == Event::MouseButtonPressed && project_components[i]->isMouseOnComponent(window.mapPixelToCoords(myMouse.getPosition(window)))) {
 					selectedComponentIndex = i;
 					selectedComponentBounds = project_components[i]->shape.getBounds();
@@ -483,7 +656,7 @@ int main() {
 		//TODO: create a list with all elements to be drawn --- for now you must manually draw each element // window.draw(class.shape)
 		// 
 		//draw all buttons
- 		if (states == MainMenu)
+		if (states == MainMenu)
 		{
 			window.clear(Color::Black);
 			for (int i = 1; i <= buttonCount; i++) {
@@ -518,8 +691,11 @@ int main() {
 
 			}
 
+			window.draw(edit_button_text);
+			rotationSlider.SliderLogic(window.mapPixelToCoords(myMouse.getPosition(window)), event);
+			rotationSlider.DrawSlider(window);
 			drawLines();
-//			cout << selectedComponentIndex << '\n';
+			//			cout << selectedComponentIndex << '\n';
 
 
 
@@ -531,9 +707,9 @@ int main() {
 
 
 		//make buttons for PROJECT buttons, check if the drawable page is in main menu or in project
-		rotationSlider.SliderLogic(window.mapPixelToCoords(myMouse.getPosition(window)), event);
-		rotationSlider.DrawSlider(window);
 
+
+		//cout << selectedComponentIndex << '\n';
 		if (selectedComponentIndex != -1)
 			drawLinesToBounds(selectedComponentBounds);
 		window.display();
